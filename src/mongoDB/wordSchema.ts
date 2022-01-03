@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose"
-import {WordModel} from "../models/singleWord";
+import {WordModel} from "../models/wordHandler";
 
 const singleWordSchema = new Schema<WordModel>({
     category: {type: String, required: true},

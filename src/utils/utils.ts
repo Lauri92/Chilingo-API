@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
+import {Express} from "express";
 
-export const initializeMongoose = async () => {
+export const initializeMongoose = async (app: Express) => {
     try {
         if (process.env.MONGOOSECONN) {
             await mongoose.connect(process.env.MONGOOSECONN).then(() => {
+                app.listen(3000)
                 const d = new Date();
                 console.log(
                     `Started on localhost @ ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`);
@@ -11,6 +13,6 @@ export const initializeMongoose = async () => {
         }
     } catch (e: any) {
         console.log(e.message)
-        initializeMongoose()
+        await initializeMongoose(app)
     }
 }

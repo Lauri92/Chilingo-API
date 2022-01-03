@@ -1,8 +1,10 @@
 import {Router} from "express";
-import {insertWord} from "../controllers/wordsController";
+import {getWords, getWordsByCategory, insertWord} from "../controllers/wordsController";
 
 const router = Router()
 
-router.route("/").post(insertWord)
+router.route("/").post(insertWord).get(getWords)
+
+router.route("/category/:category").get(getWordsByCategory)
 
 export default router

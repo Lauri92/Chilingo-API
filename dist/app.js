@@ -13,9 +13,8 @@ const app = (0, express_1.default)();
 app.use((0, body_parser_1.json)());
 app.use((0, body_parser_1.urlencoded)({ extended: true }));
 app.use("/words", wordsRoute_1.default);
-(0, utils_1.initializeMongoose)();
 // Default error handling
 app.use((err, req, res, next) => {
     res.status(400).json({ message: "Something went wrong!" });
 });
-app.listen(3000);
+(0, utils_1.initializeMongoose)(app);
