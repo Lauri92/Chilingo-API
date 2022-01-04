@@ -1,10 +1,11 @@
 import mongoose, {Schema} from "mongoose"
-import {WordModel} from "../models/wordHandler";
+import {Word} from "../models/wordHandler";
 
-const singleWordSchema = new Schema<WordModel>({
+const singleWordSchema = new Schema<Word>({
     category: {type: String, required: true},
     chineseWord: {type: String, required: true},
     englishWords: {type: [String], required: true},
+    audioURL: {type: "String", required: true}
 })
 
 export const singleWordModel = mongoose.model("Singleword", singleWordSchema)
