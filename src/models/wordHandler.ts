@@ -12,6 +12,7 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 export interface Word {
     category: string
     chineseWord: string
+    pinyin: string
     englishWords: string[]
     audioURL: string
     imagePath: string
@@ -21,14 +22,15 @@ export class WordHandler {
 
     private readonly wordModel: Word
 
-    constructor(public category: string, public chineseWord: string, public englishWords: string[], public imageName: string) {
+    constructor(public category: string, public chineseWord: string, public pinyin: string, public englishWords: string[], public imageName: string) {
 
         this.wordModel = {
             category: this.category,
             chineseWord: this.chineseWord,
+            pinyin: this.pinyin,
             englishWords: this.englishWords,
             audioURL: WordHandler.generateAudioUrl(chineseWord),
-            imagePath: `chilingo-images/${this.imageName}`
+            imagePath: `${containerName}/${this.imageName}`
         }
     }
 

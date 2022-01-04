@@ -4,11 +4,11 @@ import {WordHandler} from "../models/wordHandler";
 export const insertWord: RequestHandler = async (req, res) => {
     try {
         const {
-            category, chineseWord, englishWord, imageURL
-        } = (req.body as { category: string, chineseWord: string, englishWord: string[], imageURL: string })
+            category, chineseWord, pinyin, englishWord, imageName
+        } = (req.body as { category: string, chineseWord: string, pinyin: string, englishWord: string[], imageName: string })
 
         if (englishWord) {
-            const newWord: WordHandler = new WordHandler(category, chineseWord, englishWord, imageURL)
+            const newWord: WordHandler = new WordHandler(category, chineseWord, pinyin, englishWord, imageName)
             const inserted = await newWord.addWordToDatabaseAndUploadImageToStorage(req.file)
             res.status(200).json({message: inserted._id})
         } else {

@@ -16,7 +16,7 @@ export const uploadSingle = multer({
 export const injectFile: RequestHandler = (req, res, next) => {
     if (req.file) {
         req.body.type = req.file.mimetype;
-        req.body.imageURL = req.file.filename
+        req.body.imageName = req.file.filename
         next()
     } else {
         res.status(400).send({message: "Provide a valid image"})
