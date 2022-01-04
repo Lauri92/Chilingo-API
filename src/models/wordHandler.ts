@@ -1,24 +1,32 @@
 import {mongoWordModel} from "../mongoDB/wordSchema";
 import * as googleTTS from 'google-tts-api';
+import {BlobServiceClient} from "@azure/storage-blob";
+import * as fs from "fs";
+
+const storageAccountConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+    storageAccountConnectionString!);
 
 export interface Word {
     category: string
     chineseWord: string
     englishWords: string[]
     audioURL: string
+    imagePath: string
 }
 
 export class WordHandler {
 
     private readonly wordModel: Word
 
-    constructor(public category: string, public chineseWord: string, public englishWords: string[]) {
+    constructor(public category: string, public chineseWord: string, public englishWords: string[], public imageName: string) {
 
         this.wordModel = {
             category: this.category,
             chineseWord: this.chineseWord,
             englishWords: this.englishWords,
-            audioURL: WordHandler.generateAudioUrl(chineseWord)
+            audioURL: WordHandler.generateAudioUrl(chineseWord),
+            imagePath: `chilingo-images/${this.imageName}`
         }
     }
 
@@ -30,8 +38,24 @@ export class WordHandler {
         })
     }
 
-    async addWordToDatabase() {
-        return await mongoWordModel.create(this.wordModel)
+    async addWordToDatabaseAndUploadImageToStorage(file: Express.Multer.File | undefined) {
+        if (file) {
+            const containerName = 'chilingo-images';
+            const containerClient = await blobServiceClient.getContainerClient(
+                containerName);
+            await containerClient.createIfNotExists();
+            const filename = `${file.filename}`;
+            const filePath = `uploads/${filename}`
+            const blockBlobClient = await containerClient.getBlockBlobClient(
+                filename);
+            await blockBlobClient.uploadFile(filePath);
+            await fs.unlink(filePath, err => {
+                if (err) throw err;
+            });
+            return await mongoWordModel.create(this.wordModel)
+        } else {
+            throw new Error("Unexpected file type!")
+        }
     }
 
     printEnglishWords() {
