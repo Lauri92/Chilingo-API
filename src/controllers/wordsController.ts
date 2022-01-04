@@ -1,7 +1,7 @@
 import {RequestHandler} from "express";
 import {WordHandler} from "../models/wordHandler";
 
-export const insertWord: RequestHandler = async (req, res, next) => {
+export const insertWord: RequestHandler = async (req, res) => {
     try {
         const {
             category, chineseWord, englishWord, imageURL
@@ -19,7 +19,7 @@ export const insertWord: RequestHandler = async (req, res, next) => {
     }
 }
 
-export const getWords: RequestHandler = async (req, res, next) => {
+export const getWords: RequestHandler = async (req, res) => {
     try {
         const allWords = await WordHandler.getAllWordsFromDatabase()
         res.status(200).json({code: 200, data: allWords})
@@ -28,7 +28,7 @@ export const getWords: RequestHandler = async (req, res, next) => {
     }
 }
 
-export const getWordsByCategory: RequestHandler<{ category: string }> = async (req, res, next) => {
+export const getWordsByCategory: RequestHandler<{ category: string }> = async (req, res) => {
     try {
         const categoryPathParam = req.params.category
         const categoryWords = await WordHandler.getWordsByCategory(categoryPathParam)
@@ -38,10 +38,10 @@ export const getWordsByCategory: RequestHandler<{ category: string }> = async (r
     }
 }
 
-export const deleteWord: RequestHandler<{ id: string }> = async (req, res, next) => {
+export const deleteWord: RequestHandler<{ id: string }> = async (req, res) => {
     try {
         const idPathParam = req.params.id
-        await WordHandler.deleteWord(idPathParam)
+        await WordHandler.deleteWordFromDbAndRemoveFromStorage(idPathParam)
         res.status(200).json({message: `Deleted ${idPathParam}`})
     } catch (e: any) {
         res.status(400).send({message: e.message})

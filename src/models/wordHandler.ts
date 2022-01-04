@@ -1,6 +1,8 @@
 import {mongoWordModel} from "../mongoDB/wordSchema";
 import * as googleTTS from 'google-tts-api';
 import {BlobServiceClient} from "@azure/storage-blob";
+
+const containerName = 'chilingo-images';
 import * as fs from "fs";
 
 const storageAccountConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -40,7 +42,7 @@ export class WordHandler {
 
     async addWordToDatabaseAndUploadImageToStorage(file: Express.Multer.File | undefined) {
         if (file) {
-            const containerName = 'chilingo-images';
+
             const containerClient = await blobServiceClient.getContainerClient(
                 containerName);
             await containerClient.createIfNotExists();
@@ -71,8 +73,13 @@ export class WordHandler {
         return sortByEnglishName(wordsByCategory);
     }
 
-    static async deleteWord(id: string) {
-        await mongoWordModel.findByIdAndDelete(id)
+    static async deleteWordFromDbAndRemoveFromStorage(id: string) {
+        const deletedItem = await mongoWordModel.findByIdAndDelete(id);
+        if (deletedItem) {
+            const blobToDelete = deletedItem.imagePath.substring(16).toString();
+            const container = await blobServiceClient.getContainerClient(containerName);
+            await container.deleteBlob(blobToDelete);
+        }
     }
 
 }
