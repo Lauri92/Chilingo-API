@@ -10,7 +10,7 @@ export const insertWord: RequestHandler = async (req, res, next) => {
         if (englishWord) {
             const newWord: WordHandler = new WordHandler(category, chineseWord, englishWord)
             const inserted = await newWord.addWordToDatabase()
-            res.status(200).json({message: `Inserted word ${inserted.chineseWord}`})
+            res.status(200).json({message: inserted._id})
         } else {
             res.status(400).json({message: "Provide at least 1 English word"})
         }
@@ -33,6 +33,16 @@ export const getWordsByCategory: RequestHandler<{ category: string }> = async (r
         const categoryPathParam = req.params.category
         const categoryWords = await WordHandler.getWordsByCategory(categoryPathParam)
         res.status(200).json({code: 200, data: categoryWords})
+    } catch (e: any) {
+        res.status(400).send({message: e.message})
+    }
+}
+
+export const deleteWord: RequestHandler<{ id: string }> = async (req, res, next) => {
+    try {
+        const idPathParam = req.params.id
+        await WordHandler.deleteWord(idPathParam)
+        res.status(200).json({message: `Deleted ${idPathParam}`})
     } catch (e: any) {
         res.status(400).send({message: e.message})
     }

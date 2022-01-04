@@ -1,4 +1,4 @@
-import {singleWordModel} from "../mongoDB/wordSchema";
+import {mongoWordModel} from "../mongoDB/wordSchema";
 import * as googleTTS from 'google-tts-api';
 
 export interface Word {
@@ -31,7 +31,7 @@ export class WordHandler {
     }
 
     async addWordToDatabase() {
-        return await singleWordModel.create(this.wordModel)
+        return await mongoWordModel.create(this.wordModel)
     }
 
     printEnglishWords() {
@@ -39,18 +39,21 @@ export class WordHandler {
     }
 
     static async getAllWordsFromDatabase() {
-        return singleWordModel.find({});
+        return mongoWordModel.find({});
     }
 
-    static async getWordsByCategory(category: string) {
-        const wordsByCategory: Word[] = await singleWordModel.find({category: category});
-        return sortByEnglishName(wordsByCategory)
+    static async getWordsByCategory(category: string): Promise<Word[]> {
+        const wordsByCategory: Word[] = await mongoWordModel.find({category: category});
+        return sortByEnglishName(wordsByCategory);
     }
 
+    static async deleteWord(id: string) {
+        await mongoWordModel.findByIdAndDelete(id)
+    }
 
 }
 
-function sortByEnglishName(wordList: Word[]) {
+function sortByEnglishName(wordList: Word[]): Word[] {
     return wordList.sort((a: Word, b: Word) =>
         (a.englishWords[0] > b.englishWords[0]) ? 1 : ((b.englishWords[0] > a.englishWords[0]) ? -1 : 0))
 }

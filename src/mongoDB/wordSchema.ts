@@ -8,4 +8,4 @@ const singleWordSchema = new Schema<Word>({
     audioURL: {type: "String", required: true}
 })
 
-export const singleWordModel = mongoose.model("Singleword", singleWordSchema)
+export const mongoWordModel = mongoose.model("Singleword", singleWordSchema)
