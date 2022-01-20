@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 import wordsRoute from "./routes/wordsRoute";
-import {initializeMongoose} from "./utils/utils";
+import {launchApplication} from "./utils/utils";
 
 
 const app = express()
@@ -18,4 +18,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(400).json({message: "Something went wrong!"})
 })
 
-initializeMongoose(app)
+launchApplication(app)

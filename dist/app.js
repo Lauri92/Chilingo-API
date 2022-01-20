@@ -17,4 +17,4 @@ app.use("/words", wordsRoute_1.default);
 app.use((err, req, res, next) => {
     res.status(400).json({ message: "Something went wrong!" });
 });
-(0, utils_1.initializeMongoose)(app);
+(0, utils_1.launchApplication)(app);
