@@ -16,13 +16,20 @@ export interface Word {
     englishWords: string[]
     audioURL: string
     imagePath: string
+    hskLevel: number,
 }
 
 export class WordHandler {
 
     private readonly wordModel: Word
 
-    constructor(public category: string, public chineseWord: string, public pinyin: string, public englishWords: string[], public imageName: string) {
+    constructor(public category: string,
+                public chineseWord: string,
+                public pinyin: string,
+                public englishWords: string[],
+                public imageName: string,
+                public hskLevel: number
+    ) {
 
         this.wordModel = {
             category: this.category,
@@ -30,7 +37,8 @@ export class WordHandler {
             pinyin: this.pinyin,
             englishWords: this.englishWords,
             audioURL: WordHandler.generateAudioUrl(chineseWord),
-            imagePath: `${containerName}/${this.imageName}`
+            imagePath: `${containerName}/${this.imageName}`,
+            hskLevel: this.hskLevel
         }
     }
 

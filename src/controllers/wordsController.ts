@@ -4,11 +4,13 @@ import {WordHandler} from "../models/wordHandler";
 export const insertWord: RequestHandler = async (req, res) => {
     try {
         const {
-            category, chineseWord, pinyin, englishWord, imageName
-        } = (req.body as { category: string, chineseWord: string, pinyin: string, englishWord: string[], imageName: string })
+            category, chineseWord, pinyin, englishWord, imageName, hskLevel
+        } = (req.body as
+            { category: string, chineseWord: string, pinyin: string, englishWord: string[], imageName: string, hskLevel: number })
 
         if (englishWord) {
-            const newWord: WordHandler = new WordHandler(category, chineseWord, pinyin, englishWord, imageName)
+            const newWord: WordHandler =
+                new WordHandler(category, chineseWord, pinyin, englishWord, imageName, hskLevel)
             const inserted = await newWord.addWordToDatabaseAndUploadImageToStorage(req.file)
             res.status(200).json({message: inserted._id})
         } else {
@@ -36,6 +38,10 @@ export const getWordsByCategory: RequestHandler<{ category: string }> = async (r
     } catch (e: any) {
         res.status(400).send({message: e.message})
     }
+}
+
+export const updateWord: RequestHandler<{ id: string }> = async (req, res) => {
+
 }
 
 export const deleteWord: RequestHandler<{ id: string }> = async (req, res) => {

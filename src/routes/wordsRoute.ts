@@ -4,7 +4,8 @@ import {injectFile, uploadSingle} from "../utils/multerUtils";
 
 const router = Router()
 
-router.route("/").post(uploadSingle.single("wordImage"), injectFile, insertWord)
+router.route("/")
+    .post(uploadSingle.single("wordImage"), injectFile, insertWord)
     .get(getWords)
 
 router.route("/category/:category").get(getWordsByCategory)
