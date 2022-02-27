@@ -8,7 +8,8 @@ const singleWordSchema = new Schema<Word>({
     englishWords: {type: [String], required: true},
     audioURL: {type: String, required: true},
     imagePath: {type: String, required: true},
-    hskLevel: {type: Number, required: true}
+    hskLevel: {type: Number, required: true},
+    examples: {type: [{hanzi: String, pinyin: String, english: [String]}], required: true}
 })
 
 export const mongoWordModel = mongoose.model("Singleword", singleWordSchema)

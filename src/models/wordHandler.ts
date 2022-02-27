@@ -17,6 +17,16 @@ export interface Word {
     audioURL: string
     imagePath: string
     hskLevel: number,
+    examples: Example[]
+}
+
+export class Example {
+
+    constructor(public hanzi: string, public pinyin: string, public english: string[]) {
+        this.hanzi = hanzi
+        this.pinyin = pinyin
+        this.english = english
+    }
 }
 
 export class WordHandler {
@@ -28,7 +38,8 @@ export class WordHandler {
                 public pinyin: string,
                 public englishWords: string[],
                 public imageName: string,
-                public hskLevel: number
+                public hskLevel: number,
+                public examples: Example[]
     ) {
 
         this.wordModel = {
@@ -38,7 +49,8 @@ export class WordHandler {
             englishWords: this.englishWords,
             audioURL: WordHandler.generateAudioUrl(chineseWord),
             imagePath: `${containerName}/${this.imageName}`,
-            hskLevel: this.hskLevel
+            hskLevel: this.hskLevel,
+            examples: this.examples
         }
     }
 

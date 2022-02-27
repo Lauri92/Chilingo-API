@@ -1,16 +1,55 @@
 import {RequestHandler} from "express";
-import {WordHandler} from "../models/wordHandler";
+import {Example, WordHandler} from "../models/wordHandler";
 
 export const insertWord: RequestHandler = async (req, res) => {
     try {
         const {
-            category, chineseWord, pinyin, englishWord, imageName, hskLevel
+            category,
+            chineseWord,
+            pinyin,
+            englishWord,
+            imageName,
+            hskLevel,
+            exampleHanzi,
+            examplePinyin,
+            exampleEnglish1,
+            exampleEnglish2,
+            exampleEnglish3
         } = (req.body as
-            { category: string, chineseWord: string, pinyin: string, englishWord: string[], imageName: string, hskLevel: number })
+            {
+                category: string,
+                chineseWord: string,
+                pinyin: string,
+                englishWord: string[],
+                imageName: string,
+                hskLevel: number,
+                exampleHanzi: string[],
+                examplePinyin: string[],
+                exampleEnglish1: string[],
+                exampleEnglish2: string[],
+                exampleEnglish3: string[]
+            })
 
         if (englishWord) {
+
+            const exampleArray: Example[] = []
+            exampleHanzi.forEach((hanzi, index) => {
+                if (index == 0) {
+                    let example = new Example(hanzi, examplePinyin[index], exampleEnglish1)
+                    exampleArray.push(example)
+                } else if (index == 1) {
+                    let example = new Example(hanzi, examplePinyin[index], exampleEnglish2)
+                    exampleArray.push(example)
+                } else if (index == 2) {
+                    let example = new Example(hanzi, examplePinyin[index], exampleEnglish3)
+                    exampleArray.push(example)
+                } else {
+                    res.status(400).json({message: "Only 3 examples allowed."})
+                }
+            })
+
             const newWord: WordHandler =
-                new WordHandler(category, chineseWord, pinyin, englishWord, imageName, hskLevel)
+                new WordHandler(category, chineseWord, pinyin, englishWord, imageName, hskLevel, exampleArray)
             const inserted = await newWord.addWordToDatabaseAndUploadImageToStorage(req.file)
             res.status(200).json({message: inserted._id})
         } else {
