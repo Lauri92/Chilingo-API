@@ -1,5 +1,6 @@
 import {RequestHandler} from "express";
 import {Example, WordHandler} from "../models/wordHandler";
+import fs from "fs";
 
 export const insertWord: RequestHandler = async (req, res) => {
     try {
@@ -30,7 +31,7 @@ export const insertWord: RequestHandler = async (req, res) => {
                 exampleEnglish3: string[]
             })
 
-        if (englishWord) {
+        if (englishWord && exampleHanzi.length <= 3 && examplePinyin.length <= 3) {
 
             const exampleArray: Example[] = []
             exampleHanzi.forEach((hanzi, index) => {
@@ -53,7 +54,8 @@ export const insertWord: RequestHandler = async (req, res) => {
             const inserted = await newWord.addWordToDatabaseAndUploadImageToStorage(req.file)
             res.status(200).json({message: inserted._id})
         } else {
-            res.status(400).json({message: "Provide at least 1 English word"})
+            await WordHandler.unlinkUploadedFile(req.file)
+            res.status(400).json({message: "Provide at least 1 English word, maximum of 3 examples allowed"})
         }
     } catch (e: any) {
         res.status(400).json({message: e.message})

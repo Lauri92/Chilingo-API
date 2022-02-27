@@ -95,6 +95,14 @@ export class WordHandler {
         return sortByEnglishName(wordsByCategory);
     }
 
+    static async unlinkUploadedFile(file: Express.Multer.File | undefined) {
+        const filename = `${file?.filename}`;
+        const filePath = `uploads/${filename}`
+        await fs.unlink(filePath, err => {
+            if (err) throw err;
+        });
+    }
+
     static async deleteWordFromDbAndRemoveFromStorage(id: string) {
         const deletedItem = await mongoWordModel.findByIdAndDelete(id);
         if (deletedItem) {
