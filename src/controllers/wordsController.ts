@@ -1,6 +1,5 @@
 import {RequestHandler} from "express";
 import {Example, WordHandler} from "../models/wordHandler";
-import fs from "fs";
 
 export const insertWord: RequestHandler = async (req, res) => {
     try {
