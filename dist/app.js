@@ -8,11 +8,16 @@ const body_parser_1 = require("body-parser");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const wordsRoute_1 = __importDefault(require("./routes/wordsRoute"));
+const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const utils_1 = require("./utils/utils");
+const passport_1 = __importDefault(require("passport"));
 const app = (0, express_1.default)();
+// Add middlewares to the app router
 app.use((0, body_parser_1.json)());
 app.use((0, body_parser_1.urlencoded)({ extended: true }));
+app.use(passport_1.default.initialize());
 app.use("/words", wordsRoute_1.default);
+app.use("/auth", authRoute_1.default);
 // Default error handling
 app.use((err, req, res, next) => {
     res.status(400).json({ message: "Something went wrong!" });
