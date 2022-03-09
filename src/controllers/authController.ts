@@ -39,16 +39,10 @@ export const login: RequestHandler = (req, res) => {
         }
         req.login(user, {session: false}, (err) => {
             if (err) {
-                res.status(400).send('Error logging in.')
+                res.status(400).send({message: "Error logging in."})
             }
-            const {username, _id} = user
-            const tokenUser = {
-                id: _id,
-                username: username,
-            };
-            const token = jwt.sign(tokenUser, process.env.JWT!!)
+            const token = jwt.sign({id: user._id, username: user.username}, process.env.JWT!!)
             return res.status(200).json({message: token})
         });
-
     })(req, res);
 }

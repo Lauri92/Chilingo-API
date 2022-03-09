@@ -1,13 +1,13 @@
 import passport from "passport"
 import passportLocal from "passport-local"
 import passportJWT from "passport-jwt"
-import JWTStrategy from "passport-jwt"
-import {ExtractJwt} from "passport-jwt";
 import {ChilingoUser, chilingoUserModel} from "../mongoDB/userSchema";
 import bcrypt from "bcryptjs"
 import {Types, Document} from "mongoose";
 
 const LocalStrategy = passportLocal.Strategy
+const JWTStrategy = passportJWT.Strategy
+const ExtractJWT = passportJWT.ExtractJwt
 
 export default passport.use(new LocalStrategy(
     async (
@@ -37,3 +37,22 @@ export default passport.use(new LocalStrategy(
             console.log('catch error', e.message)
         }
     }))
+
+
+// Check token upon requesting from authentication requiring route
+passport.use(new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: process.env.JWT,
+    },
+    async (jwtPayLoad, done) => {
+        try {
+            if (jwtPayLoad === undefined) {
+                return done(null, false, {message: 'Incorrect id.'});
+            }
+            // jwt matches
+            return done(null, {...jwtPayLoad}, {message: 'Matching JWT'});
+        } catch (err) {
+            return done(err);
+        }
+    },
+));

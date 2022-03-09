@@ -17,7 +17,7 @@ app.use(passport.initialize())
 
 
 app.use("/auth", authRoute)
-app.use("/words", wordsRoute)
+app.use("/words", passport.authenticate("jwt", {session: false}), wordsRoute)
 
 // Default error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

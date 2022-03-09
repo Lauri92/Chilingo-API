@@ -17,7 +17,7 @@ app.use((0, body_parser_1.json)());
 app.use((0, body_parser_1.urlencoded)({ extended: true }));
 app.use(passportStrategies_1.default.initialize());
 app.use("/auth", authRoute_1.default);
-app.use("/words", wordsRoute_1.default);
+app.use("/words", passportStrategies_1.default.authenticate("jwt", { session: false }), wordsRoute_1.default);
 // Default error handling
 app.use((err, req, res, next) => {
     res.status(400).json({ message: "Something went wrong!" });
