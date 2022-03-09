@@ -4,9 +4,9 @@ import dotenv from "dotenv"
 
 dotenv.config()
 import wordsRoute from "./routes/wordsRoute";
-import registerRoute from "./routes/authRoute"
+import authRoute from "./routes/authRoute"
 import {launchApplication} from "./utils/utils";
-import passport from "passport";
+import passport from "./utils/passportStrategies";
 
 
 const app = express()
@@ -16,8 +16,8 @@ app.use(urlencoded({extended: true}))
 app.use(passport.initialize())
 
 
+app.use("/auth", authRoute)
 app.use("/words", wordsRoute)
-app.use("/auth", registerRoute)
 
 // Default error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

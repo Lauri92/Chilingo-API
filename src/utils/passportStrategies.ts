@@ -1,5 +1,5 @@
 import passport from "passport"
-import {Strategy} from "passport-local"
+import passportLocal from "passport-local"
 import passportJWT from "passport-jwt"
 import JWTStrategy from "passport-jwt"
 import {ExtractJwt} from "passport-jwt";
@@ -7,8 +7,9 @@ import {ChilingoUser, chilingoUserModel} from "../mongoDB/userSchema";
 import bcrypt from "bcryptjs"
 import {Types, Document} from "mongoose";
 
+const LocalStrategy = passportLocal.Strategy
 
-passport.use(new Strategy(
+export default passport.use(new LocalStrategy(
     async (
         username: string,
         password: any,
